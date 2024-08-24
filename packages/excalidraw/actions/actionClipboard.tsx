@@ -21,6 +21,7 @@ import { AppClassProperties, AppState, DataURL } from "../types";
 import { getCommonBoundingBox } from "../element/bounds";
 import { arrayToMap } from "../utils";
 import { nanoid } from "nanoid";
+import { syncInvalidIndices } from "../fractionalIndex";
 
 export const actionCopy = register({
   name: "copy",
@@ -339,7 +340,6 @@ export const actionStylize = register({
           throw new Error('Could not get canvas context');
         }
       
-
         // Draw the image on the canvas
         ctx.drawImage(img, 0, 0);
 
@@ -369,7 +369,7 @@ export const actionStylize = register({
           updated: Date.now(),
           link: null,
           locked: false,
-          fileId: dataURL,
+          fileId: dataURL as FileId,
           scale: [1, 1],
           status: "pending",
           id: nanoid(),
@@ -389,15 +389,14 @@ export const actionStylize = register({
         app.addFiles([binaryFileData]);
 
         const newElements = [...elements, imageElement];
-        // const newElementsMap = arrayToMap(newElements);
+        const newElementsWithIndices = syncInvalidIndices(newElements);
 
         return {
-          elements: newElements,
+          elements: newElementsWithIndices,
           appState: {
             ...appState,
             selectedElementIds: { [imageElement.id]: true },
           },
-
           storeAction: StoreAction.CAPTURE,
           commitToHistory: true,
         };
