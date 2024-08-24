@@ -13,6 +13,7 @@ export type ShortcutName =
       | "cut"
       | "copy"
       | "paste"
+      | "stylize"
       | "copyStyles"
       | "pasteStyles"
       | "selectAll"
@@ -66,6 +67,7 @@ const shortcutMap: Record<ShortcutName, string[]> = {
   cut: [getShortcutKey("CtrlOrCmd+X")],
   copy: [getShortcutKey("CtrlOrCmd+C")],
   paste: [getShortcutKey("CtrlOrCmd+V")],
+  stylize: [getShortcutKey("CtrlOrCmd+Alt+R")],
   copyStyles: [getShortcutKey("CtrlOrCmd+Alt+C")],
   pasteStyles: [getShortcutKey("CtrlOrCmd+Alt+V")],
   selectAll: [getShortcutKey("CtrlOrCmd+A")],

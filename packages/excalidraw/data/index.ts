@@ -151,6 +151,23 @@ export const exportCanvas = async (
     exportingFrame,
   });
 
+  if (type === "blob") {
+
+    let blob = canvasToBlob(tempCanvas);
+
+    if (appState.exportEmbedScene) {
+      blob = blob.then((blob) =>
+        import("./image").then(({ encodePngMetadata }) =>
+          encodePngMetadata({
+            blob,
+            metadata: serializeAsJSON(elements, appState, files, "local"),
+          }),
+        ),
+      );
+    }
+
+    return blob;
+  }
   if (type === "png") {
     let blob = canvasToBlob(tempCanvas);
 

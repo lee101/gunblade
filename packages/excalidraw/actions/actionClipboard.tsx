@@ -12,9 +12,14 @@ import { actionDeleteSelected } from "./actionDeleteSelected";
 import { exportCanvas, prepareElementsForExport } from "../data/index";
 import { getTextFromElements, isTextElement } from "../element";
 import { t } from "../i18n";
-import { isFirefox } from "../constants";
+import { isFirefox, MIME_TYPES } from "../constants";
 import { DuplicateIcon, cutIcon, pngIcon, svgIcon } from "../components/icons";
 import { StoreAction } from "../store";
+import {makeAIStyleTransferImage} from "./Stylize"
+import { FileId } from "../element/types";
+import { DataURL } from "../types";
+import { getCommonBoundingBox } from "../element/bounds";
+import { arrayToMap } from "../utils";
 
 export const actionCopy = register({
   name: "copy",
@@ -261,3 +266,167 @@ export const copyText = register({
   },
   keywords: ["text", "clipboard", "copy"],
 });
+
+export const actionStylize = register({
+  name: "stylize",
+  label: "labels.stylize",
+  trackEvent: { category: "element" },
+  perform: async (elements, appState, _, app) => {
+    if (!app.canvas) {
+      return {
+        storeAction: StoreAction.NONE,
+      };
+    }
+
+    const { exportedElements, exportingFrame } = prepareElementsForExport(
+      elements,
+      appState,
+      true,
+    );
+
+    try {
+      const blob = await exportCanvas(
+        "blob",
+        exportedElements,
+        appState,
+        app.files,
+        {
+          ...appState,
+          exportingFrame,
+          name: app.getName(),
+        },
+      );
+      // Get the bounding box of all exported elements
+      const boundingBox = getCommonBoundingBox(exportedElements);
+
+      // Calculate the center x and y
+      const centerX = boundingBox.minX + 8 //(boundingBox.width / 2);
+      const centerY = boundingBox.minY + 8  //(boundingBox.height / 2);
+
+      console.log("Center of exported elements:", { x: centerX, y: centerY });
+
+      if (!(blob instanceof Blob)) {
+        throw new Error("Exported canvas is not a Blob");
+      }
+
+      const prompt_defaulted = prompt || "artistic sword replica meuseum art best quality weapon gunblade fantasy sword"; // You can make this dynamic if needed
+
+      const result = await makeAIStyleTransferImage(blob, prompt_defaulted);
+      console.log("Style transfer result:", result);
+      const url = result?.path;
+      if (url) {
+        const img = new Image();
+        img.src = url;
+
+        // Set crossOrigin to anonymous to avoid tainting the canvas
+        img.crossOrigin = "anonymous";
+        await new Promise((resolve) => {
+          img.onload = resolve;
+        });
+
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          throw new Error('Could not get canvas context');
+        }
+      
+
+        // Draw the image on the canvas
+        ctx.drawImage(img, 0, 0);
+
+        // Convert to data URL
+        const dataURL = canvas.toDataURL('image/png');
+
+        const imageElement = {
+          type: "image",
+          x: centerX,
+          y: centerY,
+          width: img.width,
+          height: img.height,
+          strokeColor: "transparent",
+          backgroundColor: "transparent",
+          fillStyle: "hachure",
+          strokeWidth: 1,
+          strokeStyle: "solid",
+          roughness: 1,
+          opacity: 100,
+          groupIds: [],
+          strokeSharpness: "sharp",
+          seed: Math.floor(Math.random() * 2000),
+          version: 1,
+          versionNonce: Math.floor(Math.random() * 1000000),
+          isDeleted: false,
+          boundElements: null,
+          updated: Date.now(),
+          link: null,
+          locked: false,
+          fileId: dataURL,
+          scale: [1, 1],
+          status: "pending",
+        };
+
+        const binaryFileData = {
+          mimeType: MIME_TYPES.png,
+          id: dataURL as FileId,
+          dataURL: dataURL as DataURL,
+          created: Date.now(),
+        };
+
+        app.addFiles([binaryFileData]);
+
+        const newElements = [...elements, imageElement];
+        // const newElementsMap = arrayToMap(newElements);
+
+        return {
+          elements: newElements,
+          appState: {
+            ...appState,
+            // selectedElementIds: { [imageElement.id]: true },
+          },
+
+          storeAction: StoreAction.CAPTURE,
+          commitToHistory: true,
+        };
+      }
+    } catch (error: any) {
+      console.error(error);
+      return {
+        appState: {
+          ...appState,
+          errorMessage: error.message,
+        },
+        storeAction: StoreAction.NONE,
+      };
+    }
+
+    return {
+      storeAction: StoreAction.NONE,
+    };
+  },
+  keyTest: (event) => event.altKey && event.key === KEYS.R,
+  PanelComponent: ({ elements, appState, updateData }) => (
+    <button
+      type="button"
+      onClick={() => updateData(null)}
+      className="stylize-button"
+    >
+      {t("labels.stylize")}
+    </button>
+  ),
+});
+
+let prompt: string | null = null;
+
+const listenForPromptUpdates = () => {
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'updatePrompt') {
+      prompt = event.data.prompt;
+    }
+  });
+};
+
+// Initialize the listener
+listenForPromptUpdates();

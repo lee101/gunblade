@@ -1,9 +1,8 @@
 import React from "react";
-import { loginIcon } from "../../packages/excalidraw/components/icons";
 import { useI18n } from "../../packages/excalidraw/i18n";
 import { WelcomeScreen } from "../../packages/excalidraw/index";
 import { isExcalidrawPlusSignedUser } from "../app_constants";
-import { POINTER_EVENTS } from "../../packages/excalidraw/constants";
+// import { POINTER_EVENTS } from "../../packages/excalidraw/constants";
 
 export const AppWelcomeScreen: React.FC<{
   onCollabDialogOpen: () => any;
@@ -17,17 +16,7 @@ export const AppWelcomeScreen: React.FC<{
       .split(/(Excalidraw\+)/)
       .map((bit, idx) => {
         if (bit === "Excalidraw+") {
-          return (
-            <a
-              style={{ pointerEvents: POINTER_EVENTS.inheritFromUI }}
-              href={`${
-                import.meta.env.VITE_APP_PLUS_APP
-              }?utm_source=excalidraw&utm_medium=app&utm_content=welcomeScreenSignedInUser`}
-              key={idx}
-            >
-              Excalidraw+
-            </a>
-          );
+          return <></>;
         }
         return bit;
       });
@@ -54,17 +43,6 @@ export const AppWelcomeScreen: React.FC<{
             <WelcomeScreen.Center.MenuItemLiveCollaborationTrigger
               onSelect={() => props.onCollabDialogOpen()}
             />
-          )}
-          {!isExcalidrawPlusSignedUser && (
-            <WelcomeScreen.Center.MenuItemLink
-              href={`${
-                import.meta.env.VITE_APP_PLUS_LP
-              }/plus?utm_source=excalidraw&utm_medium=app&utm_content=welcomeScreenGuest`}
-              shortcut={null}
-              icon={loginIcon}
-            >
-              Sign up
-            </WelcomeScreen.Center.MenuItemLink>
           )}
         </WelcomeScreen.Center.Menu>
       </WelcomeScreen.Center>

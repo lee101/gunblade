@@ -48,6 +48,7 @@ export type ActionName =
   | "copy"
   | "cut"
   | "paste"
+  | "stylize"
   | "copyAsPng"
   | "copyAsSvg"
   | "copyText"

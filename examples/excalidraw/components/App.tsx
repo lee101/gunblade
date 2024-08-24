@@ -73,6 +73,7 @@ export interface AppProps {
   excalidrawLib: typeof TExcalidraw;
 }
 
+
 export default function App({
   appTitle,
   useCustom,
@@ -645,6 +646,68 @@ export default function App({
     );
   };
 
+  const onStyleTransfer = async () => {
+    if (!excalidrawAPI) {
+      return;
+    }
+    const blob = await exportToBlob({
+      elements: excalidrawAPI.getSceneElements(),
+      mimeType: "image/webp",
+      quality: 85,
+      appState: {
+        ...initialData.appState,
+        exportEmbedScene,
+        exportWithDarkMode,
+      },
+      files: excalidrawAPI.getFiles(),
+    });
+
+    const prompt = "Apply an artistic style"; // You can make this dynamic if needed
+
+    try {
+      const result = await makeAIStyleTransferImage(blob, prompt);
+      console.log("Style transfer result:", result);
+      const url = result.path;
+      if (url) {
+        const imageElement = {
+          type: "image",
+          x: 100,
+          y: 100,
+          width: 300,
+          height: 300,
+          strokeColor: "transparent",
+          backgroundColor: "transparent",
+          fillStyle: "hachure",
+          strokeWidth: 1,
+          strokeStyle: "solid",
+          roughness: 1,
+          opacity: 100,
+          groupIds: [],
+          strokeSharpness: "sharp",
+          seed: Math.floor(Math.random() * 2000),
+          version: 1,
+          versionNonce: Math.floor(Math.random() * 1000000),
+          isDeleted: false,
+          boundElements: null,
+          updated: Date.now(),
+          link: null,
+          locked: false,
+          fileId: url,
+          scale: [1, 1],
+          status: "pending",
+        };
+        excalidrawAPI.addFiles([{ id: url, dataURL: url }]);
+        excalidrawAPI.addElements([imageElement]);
+      }
+
+      // Handle the result as needed, e.g., display the transformed image
+    } catch (error) {
+      console.error("Style transfer failed:", error);
+    }
+  };
+
+  
+
   return (
     <div className="App" ref={appRef}>
       <h1>{appTitle}</h1>
@@ -774,6 +837,10 @@ export default function App({
             </button>
             <button onClick={onCopy.bind(null, "json")}>
               Copy to Clipboard as JSON
+            </button>
+
+            <button onClick={onStyleTransfer}>
+              AI Style Transfer
             </button>
           </div>
           <div
