@@ -16,7 +16,7 @@ import { isFirefox, MIME_TYPES } from "../constants";
 import { DuplicateIcon, cutIcon, pngIcon, svgIcon } from "../components/icons";
 import { StoreAction } from "../store";
 import {makeAIStyleTransferImage} from "./Stylize"
-import { FileId } from "../element/types";
+import { FileId, FractionalIndex } from "../element/types";
 import { DataURL } from "../types";
 import { getCommonBoundingBox } from "../element/bounds";
 import { arrayToMap } from "../utils";
@@ -371,7 +371,7 @@ export const actionStylize = register({
           angle: 0,
           roundness: null,
           frameId: null,
-          index: elements.length,
+          index: elements.length.toString() as FractionalIndex,
         } as const;
 
         const binaryFileData = {
