@@ -41,6 +41,7 @@ import type {
 import type { ImportedLibraryData } from "@excalidraw/excalidraw/dist/excalidraw/data/types";
 
 import "./App.scss";
+import { makeAIStyleTransferImage } from "../../../packages/excalidraw/actions/Stylize";
 
 type Comment = {
   x: number;

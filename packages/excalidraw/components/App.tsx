@@ -408,7 +408,7 @@ import { Emitter } from "../emitter";
 import { ElementCanvasButtons } from "../element/ElementCanvasButtons";
 import { COLOR_PALETTE } from "../colors";
 import { ElementCanvasButton } from "./MagicButton";
-import { MagicIcon, copyIcon, fullscreenIcon } from "./icons";
+import { MagicIcon, copyIcon, file, fullscreenIcon } from "./icons";
 import FollowMode from "./FollowMode/FollowMode";
 import { Store, StoreAction } from "../store";
 import { AnimationFrameHandler } from "../animation-frame-handler";
@@ -1791,8 +1791,8 @@ class App extends React.Component<AppProps, AppState> {
 
     if (
       this.state.exportEmbedScene &&
-      fileHandle &&
-      isImageFileHandle(fileHandle)
+      fileHandle && 'kind' in fileHandle
+      // isImageFileHandle(fileHandle)
     ) {
       this.setState({ fileHandle });
     }

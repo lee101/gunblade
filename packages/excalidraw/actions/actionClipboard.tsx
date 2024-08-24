@@ -20,6 +20,7 @@ import { FileId } from "../element/types";
 import { DataURL } from "../types";
 import { getCommonBoundingBox } from "../element/bounds";
 import { arrayToMap } from "../utils";
+import { nanoid } from "nanoid";
 
 export const actionCopy = register({
   name: "copy",
@@ -366,7 +367,12 @@ export const actionStylize = register({
           fileId: dataURL,
           scale: [1, 1],
           status: "pending",
-        };
+          id: nanoid(),
+          angle: 0,
+          roundness: null,
+          frameId: null,
+          index: elements.length,
+        } as const;
 
         const binaryFileData = {
           mimeType: MIME_TYPES.png,
@@ -384,7 +390,7 @@ export const actionStylize = register({
           elements: newElements,
           appState: {
             ...appState,
-            // selectedElementIds: { [imageElement.id]: true },
+            selectedElementIds: { [imageElement.id]: true },
           },
 
           storeAction: StoreAction.CAPTURE,
@@ -413,7 +419,7 @@ export const actionStylize = register({
       onClick={() => updateData(null)}
       className="stylize-button"
     >
-      {t("labels.stylize")}
+      Stylize
     </button>
   ),
 });
