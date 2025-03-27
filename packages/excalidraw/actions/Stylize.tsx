@@ -23,7 +23,7 @@ function encodeURIForFileName(input: string): string {
     return encoded;
 }
 
-export const makeAIStyleTransferImage = async (imageBlob: Blob, prompt: string): Promise<any> => {
+export const makeAIStyleTransferImage = async (imageBlob: Blob, prompt: string, cannyEdgeEnabled: boolean): Promise<any> => {
   const serverNames = ['image', 'images2'];
   const maxRetries = 3;
   let lastError;
@@ -42,7 +42,7 @@ export const makeAIStyleTransferImage = async (imageBlob: Blob, prompt: string):
     const queryParams = new URLSearchParams({
       prompt: prompt,
       strength: '0.6',
-      canny: 'true',
+      canny: cannyEdgeEnabled.toString(),
       save_path: `ai/${name}.webp`,
     });
 

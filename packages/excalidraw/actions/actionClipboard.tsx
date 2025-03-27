@@ -318,7 +318,7 @@ export const actionStylize = register({
 
       const prompt_defaulted = prompt || "artistic sword replica meuseum art best quality weapon gunblade fantasy sword"; // You can make this dynamic if needed
 
-      const result = await makeAIStyleTransferImage(blob, prompt_defaulted);
+      const result = await makeAIStyleTransferImage(blob, prompt_defaulted, preserveEdges);
       console.log("Style transfer result:", result);
       const url = result?.path;
       if (url) {
@@ -429,11 +429,15 @@ export const actionStylize = register({
 });
 
 let prompt: string | null = null;
+let preserveEdges: boolean = true;
 
 const listenForPromptUpdates = () => {
   window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'updatePrompt') {
       prompt = event.data.prompt;
+    }
+    if (event.data && event.data.type === 'updateCannyPreserveEdges') {
+      preserveEdges = event.data.preserveEdges;
     }
   });
 };
