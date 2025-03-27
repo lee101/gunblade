@@ -1,12 +1,9 @@
-<a href="https://excalidraw.com/" target="_blank" rel="noopener">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" alt="Excalidraw" srcset="https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github/excalidraw_github_cover_2_dark.png" />
-    <img alt="Excalidraw" src="https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github/excalidraw_github_cover_2.png" />
-  </picture>
+<a href="https://netwrck.com/tools/draw-ai-style-transfer" target="_blank" rel="noopener">
+  <img alt="Gunblade" src="https://static.netwrck.com/static/uploads/aiartistic-sword-replica-meuseum-art-best-quality-weapon-gunblade-fantasy-sword_a23b475.webp" />
 </a>
 
 <h4 align="center">
-  <a href="https://excalidraw.com">Excalidraw Editor</a> |
+  <a href="https://netwrck.com/tools/draw-ai-style-transfer">Gunblade</a> |
   <a href="https://blog.excalidraw.com">Blog</a> |
   <a href="https://docs.excalidraw.com">Documentation</a> |
   <a href="https://plus.excalidraw.com">Excalidraw+</a>
@@ -14,7 +11,8 @@
 
 <div align="center">
   <h2>
-    An open source virtual hand-drawn style whiteboard. </br>
+    An AI-powered drawing tool with style transfer capabilities. </br>
+    Create hand-drawn style diagrams and apply AI styles as you draw. </br>
     Collaborative and end-to-end encrypted. </br>
   <br />
   </h2>
@@ -54,26 +52,27 @@
 
 ## Features
 
-The Excalidraw editor (npm package) supports:
+The Gunblade editor (npm package) supports:
 
-- 💯&nbsp;Free & open-source.
+- 🧠&nbsp;AI style transfer as you draw.
 - 🎨&nbsp;Infinite, canvas-based whiteboard.
-- ✍️&nbsp;Hand-drawn like style.
+- ✍️&nbsp;Hand-drawn like style with AI enhancement.
 - 🌓&nbsp;Dark mode.
 - 🏗️&nbsp;Customizable.
 - 📷&nbsp;Image support.
 - 😀&nbsp;Shape libraries support.
 - 👅&nbsp;Localization (i18n) support.
 - 🖼️&nbsp;Export to PNG, SVG & clipboard.
-- 💾&nbsp;Open format - export drawings as an `.excalidraw` json file.
+- 💾&nbsp;Open format - export drawings as a json file.
 - ⚒️&nbsp;Wide range of tools - rectangle, circle, diamond, arrow, line, free-draw, eraser...
 - ➡️&nbsp;Arrow-binding & labeled arrows.
 - 🔙&nbsp;Undo / Redo.
 - 🔍&nbsp;Zoom and panning support.
+- 💯&nbsp;Free & open-source.
 
-## Excalidraw.com
+## Gunblade
 
-The app hosted at [excalidraw.com](https://excalidraw.com) is a minimal showcase of what you can build with Excalidraw. Its [source code](https://github.com/excalidraw/excalidraw/tree/master/excalidraw-app) is part of this repository as well, and the app features:
+The app hosted at [netwrck.com/tools/draw-ai-style-transfer](https://netwrck.com/tools/draw-ai-style-transfer) is a minimal showcase of what you can build with Gunblade. Its [source code](https://github.com/excalidraw/excalidraw/tree/master/excalidraw-app) is part of this repository as well, and the app features:
 
 - 📡&nbsp;PWA support (works offline).
 - 🤼&nbsp;Real-time collaboration.
@@ -85,7 +84,7 @@ We'll be adding these features as drop-in plugins for the npm package in the fut
 
 ## Quick start
 
-**Note:** following instructions are for installing the Excalidraw [npm package](https://www.npmjs.com/package/@excalidraw/excalidraw) when integrating Excalidraw into your own app. To run the repository locally for development, please refer to our [Development Guide](https://docs.excalidraw.com/docs/introduction/development).
+**Note:** following instructions are for installing the Gunblade [npm package](https://www.npmjs.com/package/@excalidraw/excalidraw) when integrating Gunblade into your own app. To run the repository locally for development, please refer to our [Development Guide](https://docs.excalidraw.com/docs/introduction/development).
 
 ```
 npm install react react-dom @excalidraw/excalidraw
@@ -127,3 +126,5 @@ If you like the project, you can become a sponsor at [Open Collective](https://o
 Last but not least, we're thankful to these companies for offering their services for free:
 
 [![Vercel](./.github/assets/vercel.svg)](https://vercel.com) [![Sentry](./.github/assets/sentry.svg)](https://sentry.io) [![Crowdin](./.github/assets/crowdin.svg)](https://crowdin.com)
+
+Special thanks to Excalidraw for the original drawing tool that made Gunblade possible.
