@@ -72,8 +72,10 @@ The Gunblade editor (npm package) supports:
 
 ## Gunblade
 
-The app hosted at [netwrck.com/tools/draw-ai-style-transfer](https://netwrck.com/tools/draw-ai-style-transfer) is a minimal showcase of what you can build with Gunblade. Its [source code](https://github.com/excalidraw/excalidraw/tree/master/excalidraw-app) is part of this repository as well, and the app features:
+The app hosted at [netwrck.com/tools/draw-ai-style-transfer](https://netwrck.com/tools/draw-ai-style-transfer) lets you create amazing drawings with AI-powered style transfer. Its [source code](https://github.com/excalidraw/excalidraw/tree/master/excalidraw-app) is part of this repository as well, and the app features:
 
+- 🎭&nbsp;AI style transfer that transforms your drawings as you create.
+- 🖌️&nbsp;Multiple artistic styles to choose from.
 - 📡&nbsp;PWA support (works offline).
 - 🤼&nbsp;Real-time collaboration.
 - 🔒&nbsp;End-to-end encryption.
