@@ -377,7 +377,7 @@ export const actionStylize = register({
           roundness: null,
           frameId: null,
           index: elements.length.toString() as FractionalIndex,
-        } as const;
+        };
 
         const binaryFileData = {
           mimeType: MIME_TYPES.png,
@@ -450,7 +450,7 @@ const hideErrorOverlay = () => {
   setTimeout(() => {
     const errorOverlay = document.querySelector('vite-plugin-checker-error-overlay');
     if (errorOverlay) {
-      errorOverlay.style.display = 'none';
+      (errorOverlay as HTMLElement).style.display = 'none';
     }
   }, 3000);
 };
