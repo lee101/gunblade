@@ -16,7 +16,7 @@ import { isFirefox, MIME_TYPES } from "../constants";
 import { DuplicateIcon, cutIcon, pngIcon, svgIcon } from "../components/icons";
 import { StoreAction } from "../store";
 import {makeAIStyleTransferImage} from "./Stylize"
-import { ExcalidrawElement, FileId, FractionalIndex } from "../element/types";
+import { ExcalidrawElement, FileId, FractionalIndex, ExcalidrawImageElement, FillStyle } from "../element/types";
 import { AppClassProperties, AppState, DataURL } from "../types";
 import { getCommonBoundingBox } from "../element/bounds";
 import { arrayToMap } from "../utils";
@@ -346,7 +346,7 @@ export const actionStylize = register({
         // Convert to data URL
         const dataURL = canvas.toDataURL('image/png');
 
-        const imageElement = {
+        const imageElement: ExcalidrawImageElement = {
           type: "image",
           x: centerX,
           y: centerY,
@@ -354,13 +354,12 @@ export const actionStylize = register({
           height: img.height,
           strokeColor: "transparent",
           backgroundColor: "transparent",
-          fillStyle: "hachure",
+          fillStyle: "hachure" as FillStyle,
           strokeWidth: 1,
           strokeStyle: "solid",
           roughness: 1,
           opacity: 100,
           groupIds: [],
-          strokeSharpness: "sharp",
           seed: Math.floor(Math.random() * 2000),
           version: 1,
           versionNonce: Math.floor(Math.random() * 1000000),
