@@ -582,57 +582,69 @@ const ExcalidrawWrapper = () => {
     };
   }, [excalidrawAPI]);
 
+  const exportSelectionAndPost = useCallback(
+    async (renderer: string, prompt: string, targetOrigin: string) => {
+      if (!excalidrawAPI) return;
+      try {
+        const all = excalidrawAPI.getSceneElements();
+        const appState = excalidrawAPI.getAppState();
+        const files = excalidrawAPI.getFiles();
+        const selectedIds = appState.selectedElementIds || {};
+        const selected = all.filter(
+          (el) => selectedIds[el.id] && !el.isDeleted,
+        );
+        const exportElements = selected.length > 0 ? selected : all;
+        if (!exportElements.length) {
+          window.parent.postMessage(
+            { type: "sketchExportEmpty", renderer },
+            targetOrigin,
+          );
+          return;
+        }
+        const { exportToBlob } = await import("../packages/utils/export");
+        const blob = await exportToBlob({
+          elements: exportElements as any,
+          appState: { ...appState, exportBackground: true },
+          files,
+          mimeType: "image/png",
+          quality: 0.92,
+        });
+        const reader = new FileReader();
+        reader.onload = () => {
+          window.parent.postMessage(
+            {
+              type: "sketchData",
+              dataUrl: reader.result,
+              prompt: prompt || "",
+              renderer,
+            },
+            targetOrigin,
+          );
+        };
+        reader.readAsDataURL(blob);
+      } catch (err) {
+        console.warn("exportSelectionAndPost failed", err);
+        window.parent.postMessage(
+          { type: "sketchExportEmpty", renderer },
+          targetOrigin,
+        );
+      }
+    },
+    [excalidrawAPI],
+  );
+
   useEffect(() => {
     if (!excalidrawAPI) return;
     const handler = async (event: MessageEvent) => {
       const data: any = event.data;
       if (!data || typeof data !== "object") return;
       if (data.type === "requestSketchExport") {
-        try {
-          const all = excalidrawAPI.getSceneElements();
-          const appState = excalidrawAPI.getAppState();
-          const files = excalidrawAPI.getFiles();
-          const selectedIds = appState.selectedElementIds || {};
-          const selected = all.filter(
-            (el) => selectedIds[el.id] && !el.isDeleted,
-          );
-          const exportElements = selected.length > 0 ? selected : all;
-          if (!exportElements.length) {
-            window.parent.postMessage(
-              { type: "sketchExportEmpty" },
-              event.origin || "*",
-            );
-            return;
-          }
-          const { exportToBlob } = await import(
-            "../packages/utils/export"
-          );
-          const blob = await exportToBlob({
-            elements: exportElements as any,
-            appState: { ...appState, exportBackground: true },
-            files,
-            mimeType: "image/png",
-            quality: 0.92,
-          });
-          const reader = new FileReader();
-          reader.onload = () => {
-            window.parent.postMessage(
-              {
-                type: "sketchData",
-                dataUrl: reader.result,
-                prompt: data.prompt || "",
-              },
-              event.origin || "*",
-            );
-          };
-          reader.readAsDataURL(blob);
-        } catch (err) {
-          console.warn("requestSketchExport failed", err);
-          window.parent.postMessage(
-            { type: "sketchExportEmpty" },
-            event.origin || "*",
-          );
-        }
+        const renderer = data.renderer || "gpt-image-2";
+        await exportSelectionAndPost(
+          renderer,
+          data.prompt || "",
+          event.origin || "*",
+        );
         return;
       }
       if (data.type === "insertResultImage" && data.imageUrl) {
@@ -923,11 +935,61 @@ const ExcalidrawWrapper = () => {
         autoFocus={true}
         theme={editorTheme}
         renderTopRightUI={(isMobile) => {
+          const renderBtns = (
+            <div
+              className="render-ai-buttons"
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  exportSelectionAndPost("gpt-image-2", "", "*")
+                }
+                title="Render selection with GPT Image 2 (premium)"
+                style={{
+                  padding: "6px 10px",
+                  border: "1px solid #6a5acd",
+                  background: "#6a5acd",
+                  color: "#fff",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                GPT Image 2
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  exportSelectionAndPost("diffusion", "", "*")
+                }
+                title="Render selection with diffusion (free)"
+                style={{
+                  padding: "6px 10px",
+                  border: "1px solid #2e7d32",
+                  background: "#2e7d32",
+                  color: "#fff",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                Diffusion
+              </button>
+            </div>
+          );
           if (isMobile || !collabAPI || isCollabDisabled) {
-            return null;
+            return <div className="top-right-ui">{renderBtns}</div>;
           }
           return (
             <div className="top-right-ui">
+              {renderBtns}
               {collabError.message && <CollabError collabError={collabError} />}
               <LiveCollaborationTrigger
                 isCollaborating={isCollaborating}

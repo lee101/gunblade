@@ -27,5 +27,5 @@ export const actionToggleViewMode = register({
     return typeof appProps.viewModeEnabled === "undefined";
   },
   keyTest: (event) =>
-    !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.R,
+    !event[KEYS.CTRL_OR_CMD] && event.altKey && event.shiftKey && event.code === CODES.R,
 });
